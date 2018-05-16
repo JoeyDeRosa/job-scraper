@@ -8,32 +8,41 @@ now = datetime.datetime.now()
 
 '''Put the full url of the site you want to search here as a string '''
 
-site_url = 'https://www.bing.com/search?q=youtube&qs=n&form=QBLH&sp=-1&ghc=2&pq=youtube&sc=9-7&sk=&cvid=3B92335F96D9428783BA79DA1A72D771'
-
-'''Put the key words you want to search for here as strings'''
-
-key_words = ['blog']
+site_url = 'https://www.tacomachamber.org/list/ql/finance-insurance-10'
 
 def make_search(site_url):
     search_request = requests.get(site_url, auth=('user', 'pass'))
     soup = BeautifulSoup(search_request.text, 'html.parser')
     return soup
 
-def scrape_links(key_words):
-    links = []
+def scrape_info():
+    company_names = []
+    company_addresses = []
+    company_urls = []
+    company_numbers = []
     site_soup = make_search(site_url)
-    for link in site_soup.find_all('a'):
-        for word in key_words:
-            if word in str(link.get('href')):
-                links.append(str(link.get('href')))
-    return links
+    for company_name in site_soup.findAll('div', {'class': 'mn-title'}):
+        company_names.append(company_name.get_text())
+    for company_address in site_soup.findAll('div', {'class': 'mn-address'}):
+        company_addresses.append(company_address.get_text())
+    for company_url in site_soup.findAll('a', {'class': 'mn-print-url'}):
+        company_urls.append(str(company_url.get('href')))
+    for company_number in site_soup.findAll('li', {'class': 'mn-phone'}):
+        company_numbers.append(company_number.get_text())
+    while len(company_addresses) < len(company_names):
+        company_addresses.append('not found')
+    while len(company_urls) < len(company_names):
+        company_urls.append('not found')
+    while len(company_numbers) < len(company_names):
+        company_numbers.append('not found')
+    return([company_names, company_addresses, company_urls, company_numbers])
 
-def create_link_file():
-    links = scrape_links(key_words)
-    file = open('./links_scraped/' + str(now)[0:10] + '_links.txt', 'w')
-    for link in links:
-        file.write(link + '\n')
+def create_info_file():
+    site_info = scrape_info()        
+    file = open('./info_scraped/' + str(now)[0:10] + '_info.txt', 'w')
+    for i in range(len(site_info[0]) - 1):
+        file.write(str(site_info[0][i]) + ' ' + str(site_info[1][i]) + ' ' + str(site_info[2][i]) + ' ' + str(site_info[3][i]) + '\n')
     file.close()
 
 if __name__ == '__main__':
-    create_link_file()
+    create_info_file()

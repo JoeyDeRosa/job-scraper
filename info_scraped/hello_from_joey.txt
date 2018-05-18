@@ -1,0 +1,1 @@
+this file is just here so this folder will push to github. this folder also holds the links that were scraped from the site. and always remember the illuminate is real and should be feared.

@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 import os
 import datetime
+import csv
 
 now = datetime.datetime.now()
 
@@ -38,11 +39,11 @@ def scrape_info():
     return([company_names, company_addresses, company_urls, company_numbers])
 
 def create_info_file():
-    site_info = scrape_info()        
-    file = open('./info_scraped/' + str(now)[0:10] + '_info.txt', 'w')
-    for i in range(len(site_info[0]) - 1):
-        file.write(str(site_info[0][i]) + ' ' + str(site_info[1][i]) + ' ' + str(site_info[2][i]) + ' ' + str(site_info[3][i]) + '\n')
-    file.close()
+    site_info = scrape_info()
+    with open ('./info_scraped/' + str(now)[0:10] + '_info.csv', 'w', newline='') as csvfile:
+        info_writer = csv.writer(csvfile)
+        for i in range(len(site_info[0]) - 1):
+            info_writer.writerow([str(site_info[0][i]), str(site_info[1][i]), str(site_info[2][i]), str(site_info[3][i])])
 
 if __name__ == '__main__':
     create_info_file()

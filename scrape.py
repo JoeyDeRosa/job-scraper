@@ -8,15 +8,16 @@ now = datetime.datetime.now()
 
 '''Put the full url of the site you want to search here as a string '''
 
-site_url = 'https://www.bing.com/search?q=youtube&qs=n&form=QBLH&sp=-1&ghc=2&pq=youtube&sc=9-7&sk=&cvid=3B92335F96D9428783BA79DA1A72D771'
+site_url = 'https://www.tacomachamber.org/list/ql/finance-insurance-10'
 
 '''Put the key words you want to search for here as strings'''
 
-key_words = ['blog']
+key_words = [' ']
 
 def make_search(site_url):
     search_request = requests.get(site_url, auth=('user', 'pass'))
     soup = BeautifulSoup(search_request.text, 'html.parser')
+    print(soup)
     return soup
 
 def scrape_links(key_words):
